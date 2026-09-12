@@ -1,0 +1,9 @@
+{
+  "name": "osdvas-prototype",
+  "version": "1.0.0",
+  "description": "Oil Spill Detection & Vessel Attribution System - SIH 2026 Prototype",
+  "scripts": {
+    "dev": "npx -y serve .",
+    "start": "npx -y serve ."
+  }
+}
