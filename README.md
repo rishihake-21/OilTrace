@@ -221,7 +221,6 @@ Open in a browser:
 http://localhost:5500
 ```
 
-⚠️ Do **not** open `frontend/index.html` directly via `file:///...` — browser CORS/file-origin behavior will interfere with API requests.
 
 ## 10. Demo workflow
 
@@ -240,11 +239,9 @@ http://localhost:5500
 13. Area, perimeter, and center are calculated.
 14. The frontend displays the real, segmentation-derived spill information.
 
-## 11. Accuracy / presentation note
+## 11. Accuracy
 
 For a real image, the geographic result is only as good as the supplied image footprint. The current implementation uses the footprint supplied by the user and maps pixel coordinates **linearly** into that bounding box.
-
-> Do not state that the current demo automatically retrieves the exact Sentinel-1 geolocation from image metadata unless that feature has been implemented separately. Likewise, do not present demo vessel/drift/timeline values as live AIS/environmental measurements unless connected to the corresponding real data services.
 
 ## 12. The segmentation model
 
