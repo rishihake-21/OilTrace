@@ -1,26 +1,84 @@
-# Python
+# ================================
+# Python / Virtual Environment
+# ================================
+mlvenv/
+venv/
+.venv/
+env/
+
 __pycache__/
 *.py[cod]
-.venv/
-venv/
+*.pyo
 
-# Environment
+# ================================
+# Environment / Secrets
+# ================================
 .env
+.env.*
+!.env.example
 
-# Data
-data/*
-!data/.gitkeep
+# ================================
+# ML Model Weights
+# ================================
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.h5
+*.keras
 
-# ML models
-models/*
-!models/.gitkeep
+# ================================
+# ML Generated Outputs
+# ================================
+ml/outputs/
+outputs/
+predictions/
+prediction_*.png
+prediction_*.jpg
+prediction_*.json
 
+# ================================
+# Large / Raw Dataset Files
+# ================================
+data/raw/
+data/processed/
+data/dartis-2019/
+
+*.zip
+*.7z
+*.rar
+*.tar
+*.gz
+*.tif
+*.tiff
+
+# ================================
+# Temporary / Cache
+# ================================
+*.tmp
+*.temp
+*.log
+*.cache
+
+# ================================
 # Jupyter
+# ================================
 .ipynb_checkpoints/
 
-# VS Code
+# ================================
+# IDE
+# ================================
 .vscode/
+.idea/
 
+# ================================
 # OS
-Thumbs.db
+# ================================
 .DS_Store
+Thumbs.db
+
+# ================================
+# Node
+# ================================
+node_modules/
+npm-debug.log*

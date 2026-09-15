@@ -891,3 +891,46 @@ aside {
     overflow-y: visible;
   }
 }
+
+
+/* ============================================================
+   SAR ANALYSIS UPLOAD
+   ============================================================ */
+
+#analysis-upload {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+
+    width: 260px;
+    padding: 14px;
+
+    background: rgba(15, 23, 42, 0.94);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+#analysis-upload label {
+    display: block;
+    margin-bottom: 8px;
+
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+#sar-image {
+    width: 100%;
+    font-size: 11px;
+}
+
+#analysis-status {
+    margin-top: 8px;
+
+    font-size: 11px;
+    opacity: 0.8;
+}

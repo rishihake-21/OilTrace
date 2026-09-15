@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="OSDVAS - Oil Spill Detection & Vessel Attribution System Dashboard"
+    >
+
+    <title>
+        OSDVAS - Oil Spill Detection & Vessel Attribution System
+    </title>
+
+
+    <!-- =========================================================
+         LEAFLET CSS
+         ========================================================= -->
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        crossorigin=""
+    >
+
+
+    <!-- =========================================================
+         GOOGLE FONTS
+         ========================================================= -->
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- =========================================================
+         FONT AWESOME
+         ========================================================= -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    >
+
+
+    <!-- =========================================================
+         CUSTOM CSS
+         ========================================================= -->
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================================
+         TOP NAVBAR
+         ========================================================= -->
+
+    <nav id="navbar">
+
+
+        <!-- BRAND -->
+
+        <div class="nav-brand">
+
+            <div class="brand-icon">
+
+                <i class="fas fa-satellite-dish"></i>
+
+            </div>
+
+
+            <div class="brand-text">
+
+                <h1>
+                    OSDVAS
+                </h1>
+
+                <span class="nav-subtitle">
+                    Oil Spill Detection & Vessel Attribution System
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- CENTER STATISTICS -->
+
+        <div class="nav-center">
+
+
+            <div class="nav-stat">
+
+                <span
+                    class="stat-value"
+                    id="stat-detections"
+                >
+                    1
+                </span>
+
+                <span class="stat-label">
+                    Active Detections
+                </span>
+
+            </div>
+
+
+            <div class="nav-stat">
+
+                <span
+                    class="stat-value"
+                    id="stat-vessels"
+                >
+                    7
+                </span>
+
+                <span class="stat-label">
+                    Vessels Tracked
+                </span>
+
+            </div>
+
+
+            <div class="nav-stat">
+
+                <span
+                    class="stat-value"
+                    id="stat-alerts"
+                >
+                    3
+                </span>
+
+                <span class="stat-label">
+                    Alerts
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT SIDE -->
+
+        <div class="nav-right">
+
+
+            <div class="status-indicator active">
+
+                <span class="dot pulse"></span>
+
+                <span>
+                    System Online
+                </span>
+
+            </div>
+
+
+            <span id="current-datetime"></span>
+
+        </div>
+
+    </nav>
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+         ========================================================= -->
+
+    <main id="main-content">
+
+
+        <!-- =====================================================
+             LEFT SIDEBAR
+             ===================================================== -->
+
+        <aside id="sidebar-left">
+
+
+            <!-- =================================================
+                 DETECTION PANEL
+                 ================================================= -->
+
+            <div
+                class="panel"
+                id="detection-panel"
+            >
+
+
+                <div class="panel-header">
+
+
+                    <div class="panel-title">
+
+                        <i class="fas fa-exclamation-triangle"></i>
+
+                        <h3>
+                            Active Detection
+                        </h3>
+
+                    </div>
+
+
+                    <span class="badge badge-critical">
+                        CRITICAL
+                    </span>
+
+                </div>
+
+
+                <div class="panel-body">
+
+
+                    <div class="metric-grid">
+
+
+                        <div class="metric-card">
+
+                            <span class="metric-label">
+                                Area
+                            </span>
+
+                            <span
+                                class="metric-value"
+                                id="spill-area"
+                            >
+                                --
+                            </span>
+
+                            <span class="metric-unit">
+                                km²
+                            </span>
+
+                        </div>
+
+
+                        <div class="metric-card">
+
+                            <span class="metric-label">
+                                Perimeter
+                            </span>
+
+                            <span
+                                class="metric-value"
+                                id="spill-perimeter"
+                            >
+                                --
+                            </span>
+
+                            <span class="metric-unit">
+                                km
+                            </span>
+
+                        </div>
+
+
+                        <div class="metric-card">
+
+                            <span class="metric-label">
+                                Est. Age
+                            </span>
+
+                            <span
+                                class="metric-value"
+                                id="spill-age"
+                            >
+                                --
+                            </span>
+
+                            <span class="metric-unit">
+                                hours
+                            </span>
+
+                        </div>
+
+
+                        <div class="metric-card">
+
+                            <span class="metric-label">
+                                Confidence
+                            </span>
+
+                            <span
+                                class="metric-value"
+                                id="spill-confidence"
+                            >
+                                --
+                            </span>
+
+                            <span class="metric-unit">
+                                %
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-rows">
+
+
+                        <div class="info-row">
+
+                            <i class="fas fa-crosshairs"></i>
+
+                            <span>
+
+                                Center:
+
+                                <strong id="spill-center">
+                                    --
+                                </strong>
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="info-row">
+
+                            <i class="fas fa-clock"></i>
+
+                            <span>
+
+                                Detected:
+
+                                <strong id="detection-time">
+                                    --
+                                </strong>
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="info-row">
+
+                            <i class="fas fa-satellite-dish"></i>
+
+                            <span>
+
+                                Source:
+
+                                <strong id="detection-source">
+                                    Sentinel-1 SAR
+                                </strong>
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 MAP LAYERS PANEL
+                 ================================================= -->
+
+            <div
+                class="panel"
+                id="layers-panel"
+            >
+
+
+                <div class="panel-header">
+
+
+                    <div class="panel-title">
+
+                        <i class="fas fa-layer-group"></i>
+
+                        <h3>
+                            Map Layers
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel-body">
+
+
+                    <label class="layer-toggle">
+
+                        <input
+                            type="checkbox"
+                            id="layer-spill"
+                            checked
+                        >
+
+                        <span class="toggle-slider"></span>
+
+                        <span
+                            class="layer-color"
+                            style="background:#ff4757;"
+                        ></span>
+
+                        <span>
+                            Oil Spill Region
+                        </span>
+
+                    </label>
+
+
+                    <label class="layer-toggle">
+
+                        <input
+                            type="checkbox"
+                            id="layer-vessels"
+                            checked
+                        >
+
+                        <span class="toggle-slider"></span>
+
+                        <span
+                            class="layer-color"
+                            style="background:#2ed573;"
+                        ></span>
+
+                        <span>
+                            Vessel Tracks
+                        </span>
+
+                    </label>
+
+
+                    <label class="layer-toggle">
+
+                        <input
+                            type="checkbox"
+                            id="layer-hindcast"
+                            checked
+                        >
+
+                        <span class="toggle-slider"></span>
+
+                        <span
+                            class="layer-color"
+                            style="background:#ffa502;"
+                        ></span>
+
+                        <span>
+                            Hindcast Path
+                        </span>
+
+                    </label>
+
+
+                    <label class="layer-toggle">
+
+                        <input
+                            type="checkbox"
+                            id="layer-forecast"
+                            checked
+                        >
+
+                        <span class="toggle-slider"></span>
+
+                        <span
+                            class="layer-color"
+                            style="background:#1e90ff;"
+                        ></span>
+
+                        <span>
+                            Forecast Path
+                        </span>
+
+                    </label>
+
+
+                    <label class="layer-toggle">
+
+                        <input
+                            type="checkbox"
+                            id="layer-origin"
+                            checked
+                        >
+
+                        <span class="toggle-slider"></span>
+
+                        <span
+                            class="layer-color"
+                            style="background:#ff6b81;"
+                        ></span>
+
+                        <span>
+                            Origin Point
+                        </span>
+
+                    </label>
+
+
+                    <label class="layer-toggle">
+
+                        <input
+                            type="checkbox"
+                            id="layer-heatmap"
+                        >
+
+                        <span class="toggle-slider"></span>
+
+                        <span
+                            class="layer-color"
+                            style="background:#7c4dff;"
+                        ></span>
+
+                        <span>
+                            Probability Heatmap
+                        </span>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 ENVIRONMENT PANEL
+                 ================================================= -->
+
+            <div
+                class="panel"
+                id="environment-panel"
+            >
+
+
+                <div class="panel-header">
+
+
+                    <div class="panel-title">
+
+                        <i class="fas fa-cloud-sun"></i>
+
+                        <h3>
+                            Environment
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel-body">
+
+
+                    <div class="env-grid">
+
+
+                        <div class="env-item">
+
+                            <i class="fas fa-wind"></i>
+
+                            <div class="env-data">
+
+                                <span
+                                    class="env-value"
+                                    id="wind-speed"
+                                >
+                                    12.4 kn
+                                </span>
+
+                                <span
+                                    class="env-detail"
+                                    id="wind-dir"
+                                >
+                                    NW 315°
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="env-item">
+
+                            <i class="fas fa-water"></i>
+
+                            <div class="env-data">
+
+                                <span
+                                    class="env-value"
+                                    id="current-speed"
+                                >
+                                    0.8 kn
+                                </span>
+
+                                <span
+                                    class="env-detail"
+                                    id="current-dir"
+                                >
+                                    SE 142°
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="env-item">
+
+                            <i class="fas fa-wave-square"></i>
+
+                            <div class="env-data">
+
+                                <span
+                                    class="env-value"
+                                    id="wave-height"
+                                >
+                                    1.2 m
+                                </span>
+
+                                <span class="env-detail">
+                                    Period: 6.5s
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="env-item">
+
+                            <i class="fas fa-temperature-half"></i>
+
+                            <div class="env-data">
+
+                                <span
+                                    class="env-value"
+                                    id="sst"
+                                >
+                                    28.3°C
+                                </span>
+
+                                <span class="env-detail">
+                                    Normal
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =====================================================
+             MAP
+             ===================================================== -->
+
+        <div id="map-container">
+
+
+            <!-- LEAFLET MAP -->
+
+            <div id="map"></div>
+
+
+            <!-- =================================================
+                 MAP CONTROLS
+                 ================================================= -->
+
+            <div id="map-controls">
+
+
+                <!-- ZOOM TO SPILL -->
+
+                <button
+                    id="zoom-to-spill"
+                    class="map-btn"
+                    title="Zoom to Spill"
+                >
+
+                    <i class="fas fa-compress-arrows-alt"></i>
+
+                </button>
+
+
+                <!-- RUN ANALYSIS -->
+
+                <button
+                    id="run-analysis"
+                    class="map-btn"
+                    title="Run ML Analysis"
+                >
+
+                    <i class="fas fa-play-circle"></i>
+
+                </button>
+
+            </div>
+
+
+            <!-- =================================================
+                 SAR IMAGE UPLOAD
+                 ================================================= -->
+
+            <div id="analysis-upload">
+
+
+                <label for="sar-image">
+
+                    <i class="fas fa-satellite"></i>
+
+                    Sentinel-1 SAR Image
+
+                </label>
+
+
+                <input
+                    type="file"
+                    id="sar-image"
+                    accept=".jpg,.jpeg,.png"
+                >
+
+<div class="footprint-inputs">
+
+    <div class="footprint-title">
+        <i class="fas fa-globe"></i>
+        Image Footprint
+    </div>
+
+    <div class="coordinate-grid">
+
+        <div class="coordinate-field">
+            <label for="footprint-north">North</label>
+            <input
+                type="number"
+                id="footprint-north"
+                step="0.000001"
+                placeholder="18.100000"
+            >
+        </div>
+
+        <div class="coordinate-field">
+            <label for="footprint-south">South</label>
+            <input
+                type="number"
+                id="footprint-south"
+                step="0.000001"
+                placeholder="17.600000"
+            >
+        </div>
+
+        <div class="coordinate-field">
+            <label for="footprint-east">East</label>
+            <input
+                type="number"
+                id="footprint-east"
+                step="0.000001"
+                placeholder="71.500000"
+            >
+        </div>
+
+        <div class="coordinate-field">
+            <label for="footprint-west">West</label>
+            <input
+                type="number"
+                id="footprint-west"
+                step="0.000001"
+                placeholder="70.900000"
+            >
+        </div>
+
+    </div>
+
+</div>
+                <div id="analysis-status">
+
+                    Ready for analysis
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 MAP LEGEND
+                 ================================================= -->
+
+            <div id="map-legend">
+
+
+                <h4>
+                    Legend
+                </h4>
+
+
+                <div class="legend-item">
+
+                    <span
+                        class="legend-swatch"
+                        style="background:#ff4757;"
+                    ></span>
+
+                    Oil Spill
+
+                </div>
+
+
+                <div class="legend-item">
+
+                    <span
+                        class="legend-swatch"
+                        style="background:#ffa502;"
+                    ></span>
+
+                    Hindcast
+
+                </div>
+
+
+                <div class="legend-item">
+
+                    <span
+                        class="legend-swatch"
+                        style="background:#1e90ff;"
+                    ></span>
+
+                    Forecast
+
+                </div>
+
+
+                <div class="legend-item">
+
+                    <span
+                        class="legend-swatch"
+                        style="background:#ff6b81;"
+                    ></span>
+
+                    Origin
+
+                </div>
+
+
+                <div class="legend-item">
+
+                    <span
+                        class="legend-swatch"
+                        style="background:#2ed573;"
+                    ></span>
+
+                    Vessels
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             RIGHT SIDEBAR
+             ===================================================== -->
+
+        <aside id="sidebar-right">
+
+
+            <!-- =================================================
+                 SUSPECT VESSELS
+                 ================================================= -->
+
+            <div
+                class="panel"
+                id="attribution-panel"
+            >
+
+
+                <div class="panel-header">
+
+
+                    <div class="panel-title">
+
+                        <i class="fas fa-ship"></i>
+
+                        <h3>
+                            Suspect Vessels
+                        </h3>
+
+                    </div>
+
+
+                    <span
+                        class="badge badge-count"
+                        id="suspect-count"
+                    >
+                        0
+                    </span>
+
+                </div>
+
+
+                <div
+                    class="panel-body"
+                    id="suspect-list"
+                >
+
+                    <!-- Populated by app.js -->
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 VESSEL DETAILS
+                 ================================================= -->
+
+            <div
+                class="panel"
+                id="vessel-detail-panel"
+                style="display:none;"
+            >
+
+
+                <div class="panel-header">
+
+
+                    <div class="panel-title">
+
+                        <i class="fas fa-info-circle"></i>
+
+                        <h3>
+                            Vessel Details
+                        </h3>
+
+                    </div>
+
+
+                    <button
+                        id="close-vessel-detail"
+                        class="btn-close"
+                    >
+
+                        <i class="fas fa-times"></i>
+
+                    </button>
+
+                </div>
+
+
+                <div
+                    class="panel-body"
+                    id="vessel-detail-content"
+                >
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 PIPELINE STATUS
+                 ================================================= -->
+
+            <div
+                class="panel"
+                id="pipeline-panel"
+            >
+
+
+                <div class="panel-header">
+
+
+                    <div class="panel-title">
+
+                        <i class="fas fa-diagram-project"></i>
+
+                        <h3>
+                            Pipeline Status
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel-body">
+
+
+                    <div
+                        class="pipeline-steps"
+                        id="pipeline-steps"
+                    >
+
+
+                        <!-- IMAGE INGESTION -->
+
+                        <div class="pipeline-step">
+
+                            <div class="step-icon">
+
+                                <i class="fas fa-circle"></i>
+
+                            </div>
+
+
+                            <div class="step-info">
+
+                                <span class="step-name">
+                                    Image Ingestion
+                                </span>
+
+                                <span class="step-time">
+                                    Waiting
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ML DETECTION -->
+
+                        <div class="pipeline-step">
+
+                            <div class="step-icon">
+
+                                <i class="fas fa-circle"></i>
+
+                            </div>
+
+
+                            <div class="step-info">
+
+                                <span class="step-name">
+                                    ML Detection
+                                </span>
+
+                                <span class="step-time">
+                                    Waiting
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- CHARACTERIZATION -->
+
+                        <div class="pipeline-step">
+
+                            <div class="step-icon">
+
+                                <i class="fas fa-circle"></i>
+
+                            </div>
+
+
+                            <div class="step-info">
+
+                                <span class="step-name">
+                                    Characterization
+                                </span>
+
+                                <span class="step-time">
+                                    Pending
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DRIFT MODELING -->
+
+                        <div class="pipeline-step">
+
+                            <div class="step-icon">
+
+                                <i class="fas fa-circle"></i>
+
+                            </div>
+
+
+                            <div class="step-info">
+
+                                <span class="step-name">
+                                    Drift Modeling
+                                </span>
+
+                                <span class="step-time">
+                                    Pending
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- AIS PROCESSING -->
+
+                        <div class="pipeline-step">
+
+                            <div class="step-icon">
+
+                                <i class="fas fa-circle"></i>
+
+                            </div>
+
+
+                            <div class="step-info">
+
+                                <span class="step-name">
+                                    AIS Processing
+                                </span>
+
+                                <span class="step-time">
+                                    Pending
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ATTRIBUTION -->
+
+                        <div class="pipeline-step">
+
+                            <div class="step-icon">
+
+                                <i class="fas fa-circle"></i>
+
+                            </div>
+
+
+                            <div class="step-info">
+
+                                <span class="step-name">
+                                    Attribution
+                                </span>
+
+                                <span class="step-time">
+                                    Pending
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+    </main>
+
+
+    <!-- =========================================================
+         TIMELINE
+         ========================================================= -->
+
+    <footer id="timeline-bar">
+
+
+        <!-- TIMELINE CONTROLS -->
+
+        <div class="timeline-controls">
+
+
+            <button
+                id="play-btn"
+                class="timeline-btn"
+                title="Play/Pause"
+            >
+
+                <i class="fas fa-play"></i>
+
+            </button>
+
+
+            <button
+                id="reset-btn"
+                class="timeline-btn"
+                title="Reset"
+            >
+
+                <i class="fas fa-undo"></i>
+
+            </button>
+
+
+            <select id="speed-select">
+
+                <option value="0.5">
+                    0.5x
+                </option>
+
+                <option
+                    value="1"
+                    selected
+                >
+                    1x
+                </option>
+
+                <option value="2">
+                    2x
+                </option>
+
+                <option value="5">
+                    5x
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- TIMELINE TRACK -->
+
+        <div class="timeline-track">
+
+
+            <span
+                class="timeline-label"
+                id="timeline-start"
+            >
+                -72h
+            </span>
+
+
+            <div class="slider-container">
+
+
+                <input
+                    type="range"
+                    id="timeline-slider"
+                    min="0"
+                    max="100"
+                    value="60"
+                >
+
+
+                <div
+                    class="slider-progress"
+                    id="slider-progress"
+                ></div>
+
+            </div>
+
+
+            <span
+                class="timeline-label"
+                id="timeline-end"
+            >
+                +24h
+            </span>
+
+        </div>
+
+
+        <!-- CURRENT TIMELINE INFO -->
+
+        <div class="timeline-info">
+
+            <span
+                class="timeline-current"
+                id="time-display"
+            >
+                T+0h (Detection)
+            </span>
+
+        </div>
+
+    </footer>
+
+
+    <!-- =========================================================
+         NOTIFICATIONS
+         ========================================================= -->
+
+    <div id="notification-container"></div>
+
+
+    <!-- =========================================================
+         JAVASCRIPT
+         ========================================================= -->
+
+
+    <!-- Leaflet -->
+
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        crossorigin=""
+    ></script>
+
+
+    <!-- Existing dashboard data -->
+
+    <script src="js/data.js"></script>
+
+
+    <!-- REAL FASTAPI CONNECTION -->
+
+    <script src="js/api.js"></script>
+
+
+    <!-- Dashboard logic -->
+
+    <script src="js/app.js"></script>
+
+
+</body>
+
+</html>
